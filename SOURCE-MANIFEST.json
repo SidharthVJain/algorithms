@@ -1,0 +1,16 @@
+{
+  "source_files": [
+    "f2l-algorithms-different-slot-positions.pdf",
+    "oll-algorithms.pdf",
+    "pll-algorithms.pdf",
+    "algorithms.zip"
+  ],
+  "algorithm_fields": 3,
+  "algorithms_included": false,
+  "image_assets": {
+    "oll": 57,
+    "pll": 21,
+    "f2l_unique_files": 150,
+    "f2l_rendered_entries": 168
+  }
+}

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f7f8">
+  <title>Cube Algorithms</title>
+  <meta name="description" content="A clean, editable reference for OLL, PLL and F2L cases.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">↻</div>
+      <div>
+        <div class="brand-title">Cube Algorithms</div>
+        <div class="brand-subtitle">Your personal formula book</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <span id="save-status" class="save-status" aria-live="polite">Saved locally</span>
+      <button id="clear-all" class="text-button" type="button">Clear formulas</button>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">REFERENCE • EDITABLE</div>
+        <h1>Keep every case in one place.</h1>
+        <p class="hero-copy">Choose a set, find the case, and enter up to three algorithms. Your edits stay in this browser.</p>
+      </div>
+      <div class="hero-stats" aria-label="Case counts">
+        <div class="stat"><span class="stat-value" id="stat-oll">57</span><span class="stat-label">OLL</span></div>
+        <div class="stat"><span class="stat-value" id="stat-pll">21</span><span class="stat-label">PLL</span></div>
+        <div class="stat"><span class="stat-value" id="stat-f2l">168</span><span class="stat-label">F2L entries</span></div>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Case controls">
+      <div class="segmented" role="tablist" aria-label="Algorithm set">
+        <button class="tab active" data-set="oll" role="tab" aria-selected="true">OLL</button>
+        <button class="tab" data-set="pll" role="tab" aria-selected="false">PLL</button>
+        <button class="tab" data-set="f2l" role="tab" aria-selected="false">F2L</button>
+      </div>
+      <label class="search-wrap">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input id="search" type="search" autocomplete="off" placeholder="Search case names…" aria-label="Search cases">
+        <button id="search-clear" class="icon-button" type="button" aria-label="Clear search">×</button>
+      </label>
+      <div class="filter-group" role="group" aria-label="Show cases">
+        <button class="filter active" data-filter="all" type="button">All</button>
+        <button class="filter" data-filter="empty" type="button">Empty</button>
+        <button class="filter" data-filter="started" type="button">Started</button>
+      </div>
+    </section>
+
+    <div id="set-intro" class="set-intro"></div>
+    <div id="content" class="content"></div>
+    <div id="empty-state" class="empty-state" hidden>
+      <div class="empty-icon">⌕</div>
+      <h2>No matching cases</h2>
+      <p>Try another case name or clear the search.</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div>Case names and probabilities follow the supplied reference PDFs. Algorithm fields are intentionally blank.</div>
+    <div class="footer-note">Local-only editing • no account required</div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
