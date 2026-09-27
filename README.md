@@ -17,3 +17,8 @@ Open `index.html` in a browser. No build step or network connection is required.
 - Search and Empty / Started filters.
 
 The algorithm fields are intentionally blank.
+
+
+## PDF export
+
+Use the **Export PDF** button to create a print-ready sheet of the current set. It exports the saved algorithms that match the current tab/search/filter and opens the browser print dialog; choose **Save as PDF** there.

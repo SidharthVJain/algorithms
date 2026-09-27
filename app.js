@@ -221,7 +221,163 @@ function render() {
   document.querySelectorAll(".filter").forEach((button) => button.classList.toggle("active", button.dataset.filter === state.filter));
 }
 
+function displaySetName(kind) {
+  return { oll: "OLL", pll: "PLL", f2l: "F2L" }[kind];
+}
+
+function buildPrintSheet() {
+  const printView = document.getElementById("print-view");
+  printView.replaceChildren();
+
+  const title = document.createElement("h1");
+  title.textContent = `${displaySetName(state.set)} Algorithms`;
+  printView.appendChild(title);
+
+  const subtitle = document.createElement("p");
+  subtitle.className = "print-subtitle";
+  subtitle.textContent = "Personal formula sheet";
+  printView.appendChild(subtitle);
+
+  let exported = 0;
+  const appendCase = (sectionTitle, item, extraLabel = "") => {
+    if (!caseStarted(item)) return;
+    if (state.search && !matches(item, [sectionTitle, extraLabel, item.title, item.probability || ""].join(" "))) return;
+    if (state.filter === "empty") return;
+
+    const card = document.createElement("article");
+    card.className = "print-case";
+
+    const visual = document.createElement("div");
+    visual.className = "print-visual";
+    const img = document.createElement("img");
+    img.src = item.image;
+    img.alt = "";
+    visual.appendChild(img);
+
+    const body = document.createElement("div");
+    body.className = "print-case-body";
+
+    const meta = document.createElement("div");
+    meta.className = "print-case-meta";
+    const caseTitle = document.createElement("h2");
+    caseTitle.textContent = item.title;
+    meta.appendChild(caseTitle);
+
+    if (extraLabel) {
+      const slot = document.createElement("span");
+      slot.className = "print-tag";
+      slot.textContent = extraLabel;
+      meta.appendChild(slot);
+    }
+    if (item.probability) {
+      const probability = document.createElement("span");
+      probability.className = "print-probability";
+      probability.textContent = `Probability ${item.probability}`;
+      meta.appendChild(probability);
+    }
+
+    const algorithms = document.createElement("div");
+    algorithms.className = "print-algorithms";
+    labels.forEach((label, slotIndex) => {
+      const value = getValue(item.id, slotIndex).trim();
+      if (!value) return;
+      const row = document.createElement("div");
+      row.className = "print-alg-row";
+      const labelNode = document.createElement("span");
+      labelNode.className = "print-alg-label";
+      labelNode.textContent = label;
+      const formula = document.createElement("span");
+      formula.className = "print-formula";
+      formula.textContent = value;
+      row.append(labelNode, formula);
+      algorithms.appendChild(row);
+    });
+
+    body.append(meta, algorithms);
+    card.append(visual, body);
+    return card;
+  };
+
+  if (state.set === "f2l") {
+    window.CUBE_DATA.f2l.forEach((slotData) => {
+      slotData.groups.forEach((group) => {
+        const sectionCases = [];
+        group.cases.forEach((item) => {
+          const card = appendCase(group.title, item, slotData.slot);
+          if (card) sectionCases.push(card);
+        });
+        if (!sectionCases.length) return;
+        const section = document.createElement("section");
+        section.className = "print-section";
+        const heading = document.createElement("div");
+        heading.className = "print-section-head";
+        const h3 = document.createElement("h3");
+        h3.textContent = group.title;
+        const tag = document.createElement("span");
+        tag.className = "print-tag";
+        tag.textContent = slotData.slot;
+        heading.append(h3, tag);
+        const grid = document.createElement("div");
+        grid.className = "print-grid";
+        sectionCases.forEach((card) => grid.appendChild(card));
+        section.append(heading, grid);
+        printView.appendChild(section);
+        exported += sectionCases.length;
+      });
+    });
+  } else {
+    window.CUBE_DATA[state.set].forEach((sectionData) => {
+      const sectionCases = [];
+      sectionData.cases.forEach((item) => {
+        const card = appendCase(sectionData.title, item);
+        if (card) sectionCases.push(card);
+      });
+      if (!sectionCases.length) return;
+      const section = document.createElement("section");
+      section.className = "print-section";
+      const heading = document.createElement("div");
+      heading.className = "print-section-head";
+      const h3 = document.createElement("h3");
+      h3.textContent = sectionData.title;
+      heading.appendChild(h3);
+      const grid = document.createElement("div");
+      grid.className = "print-grid";
+      sectionCases.forEach((card) => grid.appendChild(card));
+      section.append(heading, grid);
+      printView.appendChild(section);
+      exported += sectionCases.length;
+    });
+  }
+
+  if (!exported) {
+    const empty = document.createElement("div");
+    empty.className = "print-empty";
+    empty.textContent = "No saved algorithms match the current view.";
+    printView.appendChild(empty);
+  }
+
+  const footer = document.createElement("p");
+  footer.className = "print-footer";
+  footer.textContent = `Exported from Cube Algorithms • ${exported} case${exported === 1 ? "" : "s"}`;
+  printView.appendChild(footer);
+}
+
+function exportPdf() {
+  buildPrintSheet();
+  const previousTitle = document.title;
+  document.title = `${displaySetName(state.set)} Algorithms — Cube Algorithms`;
+  const cleanup = () => {
+    document.title = previousTitle;
+    document.getElementById("print-view").replaceChildren();
+    window.removeEventListener("afterprint", cleanup);
+  };
+  window.addEventListener("afterprint", cleanup);
+  window.print();
+}
+
 function wireControls() {
+  document.getElementById("export-pdf").addEventListener("click", exportPdf);
+
   document.querySelectorAll(".tab").forEach((button) => {
     button.addEventListener("click", () => {
       state.set = button.dataset.set;

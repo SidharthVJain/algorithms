@@ -19,6 +19,7 @@
     </div>
     <div class="topbar-actions">
       <span id="save-status" class="save-status" aria-live="polite">Saved locally</span>
+      <button id="export-pdf" class="action-button" type="button" title="Export the current view as a clean PDF">Export PDF</button>
       <button id="clear-all" class="text-button" type="button">Clear formulas</button>
     </div>
   </header>
@@ -63,6 +64,8 @@
       <p>Try another case name or clear the search.</p>
     </div>
   </main>
+
+  <div id="print-view" class="print-view" aria-hidden="true"></div>
 
   <footer class="footer">
     <div>Case names and probabilities follow the supplied reference PDFs. Algorithm fields are intentionally blank.</div>
