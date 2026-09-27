@@ -16,7 +16,7 @@ Open `index.html` in a browser. No build step or network connection is required.
 - Browser-local persistence via `localStorage`.
 - Search and Empty / Started filters.
 
-The algorithm fields are intentionally blank.
+The algorithm fields are prefilled from the supplied PDF references and remain editable.
 
 
 ## PDF export

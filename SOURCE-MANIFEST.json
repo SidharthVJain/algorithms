@@ -6,11 +6,14 @@
     "algorithms.zip"
   ],
   "algorithm_fields": 3,
-  "algorithms_included": false,
+  "algorithms_included": true,
   "image_assets": {
     "oll": 57,
     "pll": 21,
     "f2l_unique_files": 150,
     "f2l_rendered_entries": 168
-  }
+  },
+  "algorithm_defaults_file": "defaults.js",
+  "algorithm_default_entries": 246,
+  "notes": "Recommended algorithms are the first source-listed algorithm for each case; subsequent source-listed algorithms are filled into Alternate 1/2, capped at three total fields. F2L uses the first three source-listed algorithms where more than three are supplied."
 }

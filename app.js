@@ -1,4 +1,6 @@
-const STORAGE_KEY = "cube-algorithms-v1";
+const STORAGE_KEY = "cube-algorithms-v2";
+const LEGACY_STORAGE_KEY = "cube-algorithms-v1";
+const DEFAULT_ALGORITHMS = window.CUBE_DEFAULT_ALGORITHMS || {};
 const state = {
   set: "oll",
   filter: "all",
@@ -26,10 +28,45 @@ const labels = ["Recommended", "Alternate 1", "Alternate 2"];
 
 function loadFormulas() {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY) || "{}";
+    return JSON.parse(saved);
   } catch {
     return {};
   }
+}
+
+function caseKey(caseItem) {
+  if (caseItem.id) return caseItem.id;
+  return `f2l|${caseItem.sourceSlot || ""}|${caseItem.title}|${caseItem.variant || ""}`;
+}
+
+function walkCases(visitor) {
+  for (const kind of ["oll", "pll"]) {
+    for (const section of window.CUBE_DATA[kind]) {
+      for (const caseItem of section.cases) visitor(caseItem);
+    }
+  }
+  for (const slotData of window.CUBE_DATA.f2l) {
+    for (const group of slotData.groups) {
+      for (const caseItem of group.cases) visitor(caseItem);
+    }
+  }
+}
+
+function seedDefaultFormulas() {
+  let seeded = 0;
+  walkCases((caseItem) => {
+    const defaults = DEFAULT_ALGORITHMS[caseKey(caseItem)];
+    if (!defaults?.length) return;
+    const current = state.formulas[caseKey(caseItem)] || (state.formulas[caseKey(caseItem)] = {});
+    defaults.slice(0, labels.length).forEach((formula, slot) => {
+      if (!current[slot] || !String(current[slot]).trim()) {
+        current[slot] = formula;
+        seeded += 1;
+      }
+    });
+  });
+  return seeded;
 }
 
 function saveFormulas() {
@@ -54,7 +91,7 @@ function setValue(id, slot, value) {
 }
 
 function caseStarted(caseItem) {
-  return labels.some((_, i) => getValue(caseItem.id, i).trim().length > 0);
+  return labels.some((_, i) => getValue(caseKey(caseItem), i).trim().length > 0);
 }
 
 function matches(caseItem, contextText) {
@@ -73,9 +110,9 @@ function createInput(caseItem, slot) {
   input.autocomplete = "off";
   input.spellcheck = false;
   input.placeholder = slot === 0 ? "Enter recommended algorithm…" : `Enter alternate ${slot}…`;
-  input.value = getValue(caseItem.id, slot);
+  input.value = getValue(caseKey(caseItem), slot);
   input.setAttribute("aria-label", `${caseItem.title} — ${labels[slot]}`);
-  input.addEventListener("input", (event) => setValue(caseItem.id, slot, event.target.value));
+  input.addEventListener("input", (event) => setValue(caseKey(caseItem), slot, event.target.value));
   return input;
 }
 
@@ -279,7 +316,7 @@ function buildPrintSheet() {
     const algorithms = document.createElement("div");
     algorithms.className = "print-algorithms";
     labels.forEach((label, slotIndex) => {
-      const value = getValue(item.id, slotIndex).trim();
+      const value = getValue(caseKey(item), slotIndex).trim();
       if (!value) return;
       const row = document.createElement("div");
       row.className = "print-alg-row";
@@ -426,6 +463,7 @@ function updateStats() {
   document.getElementById("stat-f2l").textContent = countCases("f2l");
 }
 
+seedDefaultFormulas();
 wireControls();
 updateStats();
 render();
