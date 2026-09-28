@@ -420,3 +420,70 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 48px); letter-spacing: -.045em; line
   .theme-toggle { padding: 7px 8px; }
   .theme-toggle #theme-label { display: none; }
 }
+
+/* Dark-mode PDF export */
+@media print {
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  :root[data-theme="dark"] html,
+  :root[data-theme="dark"] body {
+    background: #101114 !important;
+    color: #f2f3f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  :root[data-theme="dark"] #print-view {
+    background: #101114 !important;
+    color: #f2f3f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  :root[data-theme="dark"] #print-view .print-subtitle {
+    color: #a3a7b0 !important;
+  }
+
+  :root[data-theme="dark"] #print-view .print-section-head {
+    border-bottom-color: #2f323a !important;
+  }
+
+  :root[data-theme="dark"] #print-view .print-case {
+    background: #181a1f !important;
+    border-color: #2f323a !important;
+    color: #f2f3f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  :root[data-theme="dark"] #print-view .print-probability,
+  :root[data-theme="dark"] #print-view .print-alg-label,
+  :root[data-theme="dark"] #print-view .print-visual {
+    color: #a3a7b0 !important;
+  }
+
+  :root[data-theme="dark"] #print-view .print-formula {
+    color: #f2f3f5 !important;
+  }
+
+  :root[data-theme="dark"] #print-view .print-tag {
+    background: #25213f !important;
+    border-color: #393263 !important;
+    color: #b9b0ff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  :root[data-theme="dark"] #print-view .print-footer {
+    border-top-color: #2f323a !important;
+    color: #737985 !important;
+  }
+
+  :root[data-theme="dark"] #print-view .print-empty {
+    color: #a3a7b0 !important;
+  }
+}

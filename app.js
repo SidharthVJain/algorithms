@@ -442,6 +442,88 @@ function exportPdf() {
   window.print();
 }
 
+function exportAlgorithms() {
+  const payload = {
+    format: "cube-algorithms",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    algorithms: state.formulas,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0, 10);
+  link.href = url;
+  link.download = `cube-algorithms-${stamp}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  refs.saveStatus.textContent = "Algorithms exported";
+}
+
+function normalizeImportedAlgorithms(parsed) {
+  const source = parsed?.algorithms && typeof parsed.algorithms === "object"
+    ? parsed.algorithms
+    : parsed;
+  if (!source || typeof source !== "object" || Array.isArray(source)) {
+    throw new Error("The file does not contain a valid algorithms object.");
+  }
+
+  const allowed = new Set();
+  walkCases((caseItem) => allowed.add(caseKey(caseItem)));
+  const normalized = {};
+  let importedCases = 0;
+  let importedAlgorithms = 0;
+
+  Object.entries(source).forEach(([id, values]) => {
+    if (!allowed.has(id) || !values || typeof values !== "object" || Array.isArray(values)) return;
+    const clean = {};
+    labels.forEach((_, slot) => {
+      if (typeof values[slot] === "string" && values[slot].trim()) {
+        clean[slot] = values[slot];
+        importedAlgorithms += 1;
+      }
+    });
+    if (Object.keys(clean).length) {
+      normalized[id] = clean;
+      importedCases += 1;
+    }
+  });
+
+  return { normalized, importedCases, importedAlgorithms };
+}
+
+function importAlgorithms(file) {
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    try {
+      const parsed = JSON.parse(String(reader.result || ""));
+      const result = normalizeImportedAlgorithms(parsed);
+      if (!result.importedCases) {
+        throw new Error("No matching cube cases were found in this file.");
+      }
+
+      const replace = window.confirm(
+        `Import ${result.importedAlgorithms} algorithm${result.importedAlgorithms === 1 ? "" : "s"} across ${result.importedCases} case${result.importedCases === 1 ? "" : "s"}?\n\n` +
+        "OK replaces the current algorithms. Cancel keeps your current data."
+      );
+      if (!replace) return;
+
+      state.formulas = result.normalized;
+      saveFormulas();
+      render();
+      refs.saveStatus.textContent = "Algorithms imported";
+    } catch (error) {
+      window.alert(`Could not import algorithms. ${error.message || "Please choose a valid JSON export."}`);
+    }
+  });
+  reader.addEventListener("error", () => {
+    window.alert("Could not read that file.");
+  });
+  reader.readAsText(file);
+}
+
 function wireThemeControl() {
   applyTheme(state.theme, false);
   refs.themeToggle?.addEventListener("click", () => {
@@ -451,6 +533,17 @@ function wireThemeControl() {
 
 function wireControls() {
   document.getElementById("export-pdf").addEventListener("click", exportPdf);
+  document.getElementById("export-algorithms").addEventListener("click", exportAlgorithms);
+
+  const importFile = document.getElementById("import-file");
+  document.getElementById("import-algorithms").addEventListener("click", () => {
+    importFile.value = "";
+    importFile.click();
+  });
+  importFile.addEventListener("change", (event) => {
+    const file = event.target.files?.[0];
+    if (file) importAlgorithms(file);
+  });
 
   document.querySelectorAll(".tab").forEach((button) => {
     button.addEventListener("click", () => {

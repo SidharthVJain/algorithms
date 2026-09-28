@@ -22,3 +22,9 @@ The algorithm fields are prefilled from the supplied PDF references and remain e
 ## PDF export
 
 Use the **Export PDF** button to create a print-ready sheet of the current set. It exports the saved algorithms that match the current tab/search/filter and opens the browser print dialog; choose **Save as PDF** there.
+
+## Algorithm import/export
+
+- **Export algorithms** downloads all current case algorithms as a JSON backup.
+- **Import algorithms** restores a JSON backup created by the site and replaces the current algorithms after confirmation.
+- Imports are validated against the known OLL, PLL, and F2L case IDs, so unrelated or malformed entries are ignored.
