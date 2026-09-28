@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f7f8">
+  <meta name="theme-color" content="#f6f6f7" id="theme-color">
+  <script>try{if(localStorage.getItem("cube-algorithms-theme")==="dark")document.documentElement.dataset.theme="dark";}catch(e){}</script>
   <title>Cube Algorithms</title>
   <meta name="description" content="A clean, editable reference for OLL, PLL and F2L cases.">
   <link rel="stylesheet" href="styles.css">
@@ -19,6 +20,7 @@
     </div>
     <div class="topbar-actions">
       <span id="save-status" class="save-status" aria-live="polite">Saved locally</span>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"><span class="theme-icon" aria-hidden="true">☾</span><span id="theme-label">Dark mode</span></button>
       <button id="export-pdf" class="action-button" type="button" title="Export the current view as a clean PDF">Export PDF</button>
       <button id="clear-all" class="text-button" type="button">Clear formulas</button>
     </div>

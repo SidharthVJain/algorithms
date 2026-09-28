@@ -338,3 +338,85 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 48px); letter-spacing: -.045em; line
     color: #888;
   }
 }
+
+/* Dark mode */
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel: #181a1f;
+  --panel-soft: #14161a;
+  --ink: #f2f3f5;
+  --muted: #a3a7b0;
+  --subtle: #737985;
+  --line: #2a2d34;
+  --line-strong: #3a3e47;
+  --accent: #8b7cff;
+  --accent-soft: #25213f;
+  --accent-ink: #b9b0ff;
+  --shadow: 0 8px 28px rgba(0, 0, 0, .22);
+}
+
+:root[data-theme="dark"] .topbar {
+  background: rgba(16,17,20,.90);
+  border-bottom-color: rgba(42,45,52,.88);
+}
+:root[data-theme="dark"] .controls {
+  background: rgba(16,17,20,.92);
+}
+:root[data-theme="dark"] .text-button:hover,
+:root[data-theme="dark"] .icon-button:hover {
+  background: #25272d;
+}
+:root[data-theme="dark"] .segmented,
+:root[data-theme="dark"] .filter-group {
+  background: #23252b;
+}
+:root[data-theme="dark"] .tab.active,
+:root[data-theme="dark"] .filter.active {
+  box-shadow: 0 2px 7px rgba(0,0,0,.22);
+}
+:root[data-theme="dark"] .search-wrap,
+:root[data-theme="dark"] .alg-input,
+:root[data-theme="dark"] .action-button,
+:root[data-theme="dark"] .theme-toggle {
+  background: var(--panel);
+}
+:root[data-theme="dark"] .search-wrap input::placeholder,
+:root[data-theme="dark"] .alg-input::placeholder {
+  color: #737985;
+}
+:root[data-theme="dark"] .alg-input:focus {
+  background: #1c1f25;
+}
+:root[data-theme="dark"] .action-button:hover,
+:root[data-theme="dark"] .theme-toggle:hover {
+  border-color: #4a4f5a;
+  background: #1d2026;
+}
+:root[data-theme="dark"] .slot-tag {
+  border-color: #393263;
+}
+:root[data-theme="dark"] .case-card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,.20);
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 8px 10px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 750;
+  box-shadow: 0 2px 7px rgba(18,20,26,.05);
+}
+.theme-toggle:hover { border-color: #c7c9d0; background: #fafafd; }
+.theme-icon { font-size: 14px; line-height: 1; }
+.theme-toggle:focus-visible { outline: 2px solid #b9b3ff; outline-offset: 2px; }
+
+@media (max-width: 620px) {
+  .theme-toggle { padding: 7px 8px; }
+  .theme-toggle #theme-label { display: none; }
+}

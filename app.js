@@ -1,11 +1,13 @@
 const STORAGE_KEY = "cube-algorithms-v2";
 const LEGACY_STORAGE_KEY = "cube-algorithms-v1";
 const DEFAULT_ALGORITHMS = window.CUBE_DEFAULT_ALGORITHMS || {};
+const THEME_KEY = "cube-algorithms-theme";
 const state = {
   set: "oll",
   filter: "all",
   search: "",
   formulas: loadFormulas(),
+  theme: loadTheme(),
 };
 
 const refs = {
@@ -16,6 +18,10 @@ const refs = {
   searchWrap: document.querySelector(".search-wrap"),
   searchClear: document.getElementById("search-clear"),
   saveStatus: document.getElementById("save-status"),
+  themeToggle: document.getElementById("theme-toggle"),
+  themeLabel: document.getElementById("theme-label"),
+  themeIcon: document.querySelector("#theme-toggle .theme-icon"),
+  themeColor: document.getElementById("theme-color"),
 };
 
 const descriptions = {
@@ -25,6 +31,30 @@ const descriptions = {
 };
 
 const labels = ["Recommended", "Alternate 1", "Alternate 2"];
+
+function loadTheme() {
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === "dark" || saved === "light") return saved;
+  } catch {}
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
+function applyTheme(theme, persist = true) {
+  state.theme = theme === "dark" ? "dark" : "light";
+  document.documentElement.dataset.theme = state.theme;
+  if (refs.themeLabel) refs.themeLabel.textContent = state.theme === "dark" ? "Light mode" : "Dark mode";
+  if (refs.themeIcon) refs.themeIcon.textContent = state.theme === "dark" ? "☀" : "☾";
+  if (refs.themeToggle) {
+    const next = state.theme === "dark" ? "light" : "dark";
+    refs.themeToggle.setAttribute("aria-label", `Switch to ${next} mode`);
+    refs.themeToggle.setAttribute("title", `Switch to ${next} mode`);
+  }
+  if (refs.themeColor) refs.themeColor.setAttribute("content", state.theme === "dark" ? "#101114" : "#f6f6f7");
+  if (persist) {
+    try { localStorage.setItem(THEME_KEY, state.theme); } catch {}
+  }
+}
 
 function loadFormulas() {
   try {
@@ -412,6 +442,13 @@ function exportPdf() {
   window.print();
 }
 
+function wireThemeControl() {
+  applyTheme(state.theme, false);
+  refs.themeToggle?.addEventListener("click", () => {
+    applyTheme(state.theme === "dark" ? "light" : "dark");
+  });
+}
+
 function wireControls() {
   document.getElementById("export-pdf").addEventListener("click", exportPdf);
 
@@ -464,6 +501,7 @@ function updateStats() {
 }
 
 seedDefaultFormulas();
+wireThemeControl();
 wireControls();
 updateStats();
 render();
